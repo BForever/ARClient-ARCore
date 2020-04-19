@@ -47,13 +47,13 @@ public class AugmentedImageFragment extends ArFragment {
   // matching.
 //  private static final String DEFAULT_IMAGE_NAME = "default.jpg";
 //  private static final String DEFAULT_IMAGE_NAME_MINE = "mine.jpeg";
-  private static final String DEFAULT_IMAGE_NAME = "mine.jpeg";
+  private static final String DEFAULT_IMAGE_NAME = "QR_grey.jpg";
   // This is a pre-created database containing the sample image.
   private static final String SAMPLE_IMAGE_DATABASE = "myimages.imgdb";
 
   // Augmented image configuration and rendering.
   // Load a single image (true) or a pre-generated image database (false).
-  private static final boolean USE_SINGLE_IMAGE = false;
+  private static final boolean USE_SINGLE_IMAGE = true;
 
   // Do a runtime check for the OpenGL level available at runtime to avoid Sceneform crashing the
   // application.
@@ -88,23 +88,23 @@ public class AugmentedImageFragment extends ArFragment {
     View view = super.onCreateView(inflater, container, savedInstanceState);
 
     // Turn off the plane discovery since we're only looking for images
-    getPlaneDiscoveryController().hide();
-    getPlaneDiscoveryController().setInstructionView(null);
-    getArSceneView().getPlaneRenderer().setEnabled(false);
+//    getPlaneDiscoveryController().hide();
+//    getPlaneDiscoveryController().setInstructionView(null);
+//    getArSceneView().getPlaneRenderer().setEnabled(false);
     return view;
   }
 
-  @Override
-  protected Config getSessionConfiguration(Session session) {
-    Config config = super.getSessionConfiguration(session);
-    if (!setupAugmentedImageDatabase(config, session)) {
-      SnackbarHelper.getInstance()
-          .showError(getActivity(), "Could not setup augmented image database");
-    }
-    return config;
-  }
+//  @Override
+//  protected Config getSessionConfiguration(Session session) {
+//    Config config = super.getSessionConfiguration(session);
+//    if (!setupAugmentedImageDatabase(config, session)) {
+//      SnackbarHelper.getInstance()
+//          .showError(getActivity(), "Could not setup augmented image database");
+//    }
+//    return config;
+//  }
 
-  private boolean setupAugmentedImageDatabase(Config config, Session session) {
+  public boolean setupAugmentedImageDatabase(Config config, Session session) {
     AugmentedImageDatabase augmentedImageDatabase;
 
     AssetManager assetManager = getContext() != null ? getContext().getAssets() : null;
@@ -126,7 +126,7 @@ public class AugmentedImageFragment extends ArFragment {
       }
 
       augmentedImageDatabase = new AugmentedImageDatabase(session);
-      augmentedImageDatabase.addImage(DEFAULT_IMAGE_NAME, augmentedImageBitmap,0.1f);
+      augmentedImageDatabase.addImage(DEFAULT_IMAGE_NAME, augmentedImageBitmap,0.2f);
 //      augmentedImageDatabase.addImage(DEFAULT_IMAGE_NAME_MINE, loadAugmentedImageBitmap(assetManager,DEFAULT_IMAGE_NAME_MINE),0.12f);
       // If the physical size of the image is known, you can instead use:
       //     augmentedImageDatabase.addImage("image_name", augmentedImageBitmap, widthInMeters);

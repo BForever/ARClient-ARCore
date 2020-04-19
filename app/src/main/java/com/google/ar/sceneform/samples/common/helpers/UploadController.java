@@ -3,7 +3,6 @@ package com.google.ar.sceneform.samples.common.helpers;
 import android.app.Activity;
 import android.graphics.Color;
 import android.media.Image;
-import android.nfc.Tag;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;

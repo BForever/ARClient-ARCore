@@ -17,18 +17,24 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
-public class ImageSaver {
-    private static String TAG="ImageSaver";
+public class ImageHelper {
+    private static String TAG="ImageHelper";
 
-    private static byte[] NV21toJPEG(byte[] nv21, int width, int height) {
+    private static byte[] NV21toJPEG(byte[] nv21, int width, int height,int quality) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         YuvImage yuv = new YuvImage(nv21, ImageFormat.NV21, width, height, null);
-        yuv.compressToJpeg(new Rect(0, 0, width, height), 100, out);
+        yuv.compressToJpeg(new Rect(0, 0, width, height), quality, out);
         return out.toByteArray();
     }
     private static void NV21toJPEG(byte[] nv21, int width, int height,OutputStream out) {
         YuvImage yuv = new YuvImage(nv21, ImageFormat.NV21, width, height, null);
         yuv.compressToJpeg(new Rect(0, 0, width, height), 30, out);
+    }
+
+    public static Bitmap ImagetoBitmap(Image image){
+        byte[] bytes = NV21toJPEG(YUV_420_888toNV21(image),image.getWidth(),image.getHeight(),100);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+        return bitmap;
     }
 
 

@@ -59,7 +59,7 @@ public class ImageUploader extends AsyncTask<Image,Void,Boolean> {
             c.connect();
             Log.i(TAG,"connected, elapsed: "+String.valueOf(SystemClock.uptimeMillis()-startTime)+"ms");
             OutputStream output = c.getOutputStream();
-            ImageSaver.Save(image,output);
+            ImageHelper.Save(image,output);
             output.close();
             Log.i(TAG,"image transferred, elapsed: "+String.valueOf(SystemClock.uptimeMillis()-startTime)+"ms");
             if(c.getResponseCode()<400){
