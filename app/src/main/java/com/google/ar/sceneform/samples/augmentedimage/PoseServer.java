@@ -3,6 +3,8 @@ package com.google.ar.sceneform.samples.augmentedimage;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.ar.sceneform.samples.augmentedimage.AugmentedImageActivity;
 import com.google.ar.sceneform.samples.augmentedimage.PoseInfo;
@@ -25,7 +27,7 @@ public class PoseServer extends AsyncTask<PoseInfo, Void, PoseInfo[]> {
     public PoseServer(AugmentedImageActivity activity,boolean upload) {
         this.activity = activity;
         this.upload = upload;
-        SERVER_ADDRESS = activity.SERVER_ADDRESS+":5000/pose";
+        SERVER_ADDRESS = "http://47.103.3.12"+":5002/pose";
     }
 
     @Override
@@ -70,6 +72,9 @@ public class PoseServer extends AsyncTask<PoseInfo, Void, PoseInfo[]> {
                 InputStreamReader inputStreamReader = new InputStreamReader(c.getInputStream());
 
                 poseInfos = res.fromJson(inputStreamReader, PoseInfo[].class);
+                this.activity.warningLayout.setVisibility(View.INVISIBLE);
+//                Toast.makeText(this.activity, "位姿服务器连接成功！", Toast.LENGTH_SHORT).show();
+
                 Log.i(TAG, "response fetched, elapsed: " + String.valueOf(SystemClock.uptimeMillis() - startTime) + "ms");
                 Log.i(TAG, "Successfully get pose: " + poseInfos.length + " items");
             } else {
@@ -79,7 +84,7 @@ public class PoseServer extends AsyncTask<PoseInfo, Void, PoseInfo[]> {
 
                 poseInfos = new PoseInfo[1];
                 poseInfos[0]=poseInfo;
-
+//                Toast.makeText(this.activity, "注意！位姿服务器连接失败！", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Error posting pose: " + poseInfo.response);
             }
             return poseInfos;

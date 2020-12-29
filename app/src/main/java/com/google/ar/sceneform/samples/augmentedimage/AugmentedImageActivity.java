@@ -80,6 +80,7 @@ public class AugmentedImageActivity extends AppCompatActivity {
     public ArFragment arFragment;
     public ArSceneView arSceneView;
     public LinearLayout linearLayout;
+    public LinearLayout warningLayout;
     public Button button;
     public EditText editText;
     public GestureDetector gestureDetector;
@@ -93,8 +94,8 @@ public class AugmentedImageActivity extends AppCompatActivity {
     // Labels
     public boolean hasPlacedLabels;
     public PoseInfo[] poseInfos;
-    public String SERVER_ADDRESS="http://47.103.3.12";
-    public String UI_SERVER_PORT="8000";
+    public String SERVER_ADDRESS="http://120.55.102.225";
+    public String UI_SERVER_PORT="12375";
 
 
     // Augmented image and its associated center pose anchor, keyed by the augmented image in
@@ -113,11 +114,11 @@ public class AugmentedImageActivity extends AppCompatActivity {
                 new GestureDetector(
                         this,
                         new GestureDetector.SimpleOnGestureListener() {
-                            @Override
-                            public boolean onSingleTapUp(MotionEvent e) {
-                                onSingleTap(e);
-                                return true;
-                            }
+//                            @Override
+//                            public boolean onSingleTapUp(MotionEvent e) {
+//                                onSingleTap(e);
+//                                return true;
+//                            }
 
                             @Override
                             public boolean onDown(MotionEvent e) {
@@ -128,6 +129,7 @@ public class AugmentedImageActivity extends AppCompatActivity {
 
 //        uploadController = new UploadController(this, frameLayout);
         linearLayout = findViewById(R.id.linearlayout);
+        warningLayout = findViewById(R.id.warningLayout);
         button = findViewById(R.id.button);
         editText = findViewById(R.id.editText);
 
@@ -192,6 +194,8 @@ public class AugmentedImageActivity extends AppCompatActivity {
 
                 arSceneView = arFragment.getArSceneView();
                 arSceneView.setupSession(session);
+                arSceneView.setLightEstimationEnabled(false);
+                arSceneView.getPlaneRenderer().setEnabled(false);
 
                 scene = arFragment.getArSceneView().getScene();
                 scene.addOnUpdateListener(this::onUpdateFrame);

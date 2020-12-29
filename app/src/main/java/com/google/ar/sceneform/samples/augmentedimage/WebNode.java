@@ -1,9 +1,16 @@
 package com.google.ar.sceneform.samples.augmentedimage;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.SystemClock;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.ar.core.Pose;
@@ -14,8 +21,13 @@ import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.rendering.ViewRenderable;
+import com.google.ar.sceneform.rendering.ViewSizer;
+import com.google.ar.sceneform.samples.common.helpers.GeoHelper;
 
 public class WebNode extends Node {
+    public Renderable renderable;
+    public boolean focus =false;
+    public long debounce = 0;
 
     // create new node upon parent
     WebNode(NodeParent parent, Context context, String url){
@@ -71,27 +83,71 @@ public class WebNode extends Node {
         setupWebView(context,url);
     }
 
-    private void setupWebView(Context context,String url){
+    @SuppressLint("ClickableViewAccessibility")
+    private void setupWebView(Context context, String url){
         ViewRenderable.builder()
                 .setView(context, R.layout.web_view)
                 .build()
                 .thenAccept(
                         (renderable) -> {
                             this.setRenderable(renderable);
+                            this.renderable = renderable;
+                            renderable.setSizer(new ViewSizer() {
+                                @Override
+                                public Vector3 getSize(View view) {
+                                    return new Vector3(0.5f,0.4f,1f);
+                                }
+                            });
                             WebView webView = (WebView)renderable.getView();
                             //支持缩放
                             WebSettings webSettings = webView.getSettings();
                             webSettings.setUseWideViewPort(true);
                             webSettings.setLoadWithOverviewMode(true);
-                            webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
-                            webView.setInitialScale(55);
-                            webView.setWebViewClient(new WebViewClient(){
+                            webSettings.setJavaScriptEnabled(true);
+                            webSettings.setDomStorageEnabled(true);
+                            webSettings.setAllowFileAccessFromFileURLs(true);
+//                            webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
+                            webView.setInitialScale(280);
+//                            webView.setWebViewClient(new WebViewClient(){
+//                                @Override
+//                                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//                                    return false;// 返回false
+//                                }
+//                            });
+                            webView.loadUrl(url);
+                            webView.setOnTouchListener(new View.OnTouchListener(){
                                 @Override
-                                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                                    return false;// 返回false
+                                public boolean onTouch(View view, MotionEvent motionEvent) {
+                                    Log.e("SIZE","setSizer");
+                                    if(SystemClock.uptimeMillis()-debounce<500){
+                                        debounce = SystemClock.uptimeMillis();
+                                        return false;
+                                    }
+                                    if(!focus){
+                                        renderable.setSizer(new ViewSizer() {
+                                            @Override
+                                            public Vector3 getSize(View view) {
+                                                return new Vector3(1f,0.8f,1f);
+                                            }
+                                        });
+//                                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(600,480);
+//                                        view.setLayoutParams(params);
+                                        focus = true;
+                                    }else {
+                                        renderable.setSizer(new ViewSizer() {
+                                            @Override
+                                            public Vector3 getSize(View view) {
+                                                return new Vector3(0.5f,0.4f,1f);
+                                            }
+                                        });
+//                                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(300,240);
+//                                        view.setLayoutParams(params);
+                                        focus = false;
+                                    }
+                                    debounce = SystemClock.uptimeMillis();
+                                    return true;
                                 }
                             });
-                            webView.loadUrl(url);
                         })
                 .exceptionally(
                         (throwable) -> {
@@ -106,7 +162,10 @@ public class WebNode extends Node {
         Vector3 cameraPosition = getScene().getCamera().getWorldPosition();
         Vector3 cardPosition = this.getWorldPosition();
         Vector3 direction = Vector3.subtract(cameraPosition, cardPosition);
+        direction.y = 0;
         Quaternion lookRotation = Quaternion.lookRotation(direction, Vector3.up());
+//        Vector3 angles = GeoHelper.ToEulerAngles(lookRotation);
+//        this.setWorldRotation(Quaternion.axisAngle(Vector3.up(),angles.z));
         this.setWorldRotation(lookRotation);
     }
 }

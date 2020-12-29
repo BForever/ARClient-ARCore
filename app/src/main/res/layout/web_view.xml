@@ -15,8 +15,8 @@
    limitations under the License.
 -->
 <WebView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="125dp"
-    android:layout_height="100dp"
+    android:layout_width="600dp"
+    android:layout_height="480dp"
     android:alpha="0.8"
     android:clickable="true"
     android:contextClickable="true"

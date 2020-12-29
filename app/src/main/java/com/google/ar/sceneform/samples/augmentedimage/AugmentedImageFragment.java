@@ -53,7 +53,7 @@ public class AugmentedImageFragment extends ArFragment {
 
   // Augmented image configuration and rendering.
   // Load a single image (true) or a pre-generated image database (false).
-  private static final boolean USE_SINGLE_IMAGE = true;
+  private static final boolean USE_SINGLE_IMAGE = false;
 
   // Do a runtime check for the OpenGL level available at runtime to avoid Sceneform crashing the
   // application.

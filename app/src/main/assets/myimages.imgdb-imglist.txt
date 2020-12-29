@@ -1,2 +1,2 @@
-earth|default.jpg|0.13
-book|mine.jpeg|0.13
+color|QR-new-color.png|0.2
+grey|QR-new-grey.png|0.2
